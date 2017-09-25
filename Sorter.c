@@ -9,6 +9,8 @@ int main(int argc, char **argv) {
 	
 	//Debug Command to test CSV Parser.
 	printRange(csv, 195, 215, 16);
+
+	freeCSV(csv);
 	
 	return 0;
 }
@@ -79,7 +81,7 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 	char eofReached = 0, newlineFound = 0, next;
 	int scanResult;
 
-	char *currentString;
+	char *currentString = malloc(sizeof(char)*maxStringSize);;
 	int stringPosition;
 
 	int quotationMarksFound = 0;
@@ -97,8 +99,6 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 		//For each line, a new entry will be created (with an array of value pointers).
 		currentEntry = malloc(sizeof(struct entry));
 		currentEntry -> values = malloc(sizeof(union value) * columns);
-
-		currentString = malloc(sizeof(char)*maxStringSize);
 
 		//Loop through each character within a line until line break or end of file reached.
 		while (!newlineFound && !eofReached) {
@@ -240,10 +240,37 @@ void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber) {
 
 }
 
-void mergesortMovieList(struct csv *list, char *query) {
+void mergesortMovieList(struct csv *csv, char *query) {
 	return;
 }
 
-void printMovieList(struct csv *list) {
+void printMovieList(struct csv *csv) {
 	return;
+}
+
+///Frees CSV struct pointer for future usage.
+void freeCSV(struct csv *csv) {
+	int i;
+
+	//Free Column Types (Array of Enums)
+	free(csv->columnTypes);
+
+	//Free Each Individual Column Name (Dynamically Allocated String)
+	for (i=0;i<columns;i++) {
+		free(csv->columnNames[i]);
+	}
+
+	//Free Column Names (Array of Dynamically Allocated Strings)
+	free(csv->columnNames);
+
+	//Free Each Individual CSV Entry (Array of Value Structs)
+	for (i=0;i<maxEntries;i++) {
+		free(csv->entries[i]);
+	}
+
+	//Free CSV Entries (Array of Entry Pointers)
+	free(csv->entries);
+
+	//Free CSV (Dynamically Allocated Struct)
+	free(csv);
 }

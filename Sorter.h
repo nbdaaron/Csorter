@@ -70,8 +70,11 @@ enum type getTypeFromColumnName(char *name);
 void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber);
 
 //Sorting methods
-void mergesortMovieList(struct csv *list, char *query);
+void mergesortMovieList(struct csv *csv, char *query);
 
 //Output methods
-void printMovieList(struct csv *list);
+void printMovieList(struct csv *csv);
+
+//Cleanup methods
+void freeCSV(struct csv *csv);
 

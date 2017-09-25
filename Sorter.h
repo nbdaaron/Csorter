@@ -27,21 +27,19 @@ const unsigned int maxEntries = 10000000;
 
 
 union value {
-	int numVal;
+	long numVal;
+	double decimalVal;
 	char *stringVal;
 };
 
-struct cell {
-	char *columnName;
-	union value val;
-};
-
 struct entry {
-	struct cell *cells;
+	union value **values;
 };
 
 struct csv {
-	struct entry *entries;
+	char **columnNames;
+	enum type *columnTypes;
+	struct entry **entries;
 };
 
 enum type {
@@ -51,6 +49,10 @@ enum type {
 	error = -1
 };
 
+struct headerInfo {
+	enum type *types;
+	char **columnNames;
+};
 
 
 //Suggestion: define a struct that mirrors a record (row) of the data set
@@ -59,7 +61,7 @@ enum type {
 ////Suggestion: prototype a mergesort function
 
 struct csv *parseCSV();
-enum type *getTypes();
+struct headerInfo getHeaderInfo();
 enum type getTypeFromColumnName(char *name);
 void mergesortMovieList(struct csv *list, char *query);
 void printMovieList(struct csv *list);

@@ -11,43 +11,112 @@ int main(int argc, char **argv) {
 }
 
 struct csv *parseCSV() {
-	enum type *types = getTypes();
+	int i;
 	char eofReached = 0, newlineFound = 0, entryFound = 0, next;
 	int scanResult;
 	struct csv *ret = malloc(sizeof(struct csv));
+	struct headerInfo headerInfo = getHeaderInfo();
+	ret->entries = malloc(sizeof(struct entry) * maxEntries);
+	ret->columnTypes = headerInfo.types;
+	ret->columnNames = headerInfo.columnNames;
 
-	ret->entries = malloc(sizeof(struct entry *) * maxEntries);
+	char *string = malloc(sizeof(char)*maxStringSize);
+	int stringPosition;
+
+	int quotationMarksFound = 0;
+
+	int currentEntryPosition = 0;
+	int currentValuePosition = 0;
+	struct entry *currentEntry;
+	union value *currentValue;
+
 	while (!eofReached) {
-		newlineFound = 0, entryFound = 0;
+		newlineFound = 0, entryFound = 0, stringPosition = 0;
+
+		currentEntry = malloc(sizeof(struct entry));
+		currentEntry -> values = malloc(sizeof(union value *) * columns);
+
+		for (i = 0; i<columns; i++) {
+			currentEntry -> values[i] = malloc(sizeof(union value *));
+		}
+
+		currentValue = malloc(sizeof(union value));
+
 		while (!newlineFound && !eofReached) {
 			scanResult = scanf("%c", &next);
 			if (scanResult == EOF) {
+				string[stringPosition++] = '\0';
+				if (strlen(string)>0) {
+					//printf("String: %s\n", string);
+					currentEntry -> values[currentValuePosition++] -> stringVal = string;
+				}
+				stringPosition = 0;
+
+
+				string = malloc(sizeof(char)*maxStringSize);
 				eofReached = 1;
 				break;
 			}
 			if (next == '\r' || next == '\n') {
+				string[stringPosition++] = '\0';
+				if (strlen(string)>0) {
+					//printf("String: %s\n", string);
+					currentEntry -> values[currentValuePosition++] -> stringVal = string;
+				}
+				stringPosition = 0;
+
+
+				string = malloc(sizeof(char)*maxStringSize);
 				newlineFound = 1;
 				break;
+			} /*else if (next == '"') {
+				printf("Quotes Found!");
+			}*/ else if (next == ',') {
+				string[stringPosition++] = '\0';
+				if (strlen(string)>0) {
+					//printf("String: %s\n", string);
+					currentEntry -> values[currentValuePosition++] -> stringVal = string;
+
+					//For now, if the CSV file has too many columns in a single row, ignore the rest of that row.
+					//Should be fixed when quotation marks are handled.
+					if (currentValuePosition > columns) {
+						newlineFound = 1;
+					}
+				}
+				stringPosition = 0;	
+
+				string = malloc(sizeof(char)*maxStringSize);
 			} else {
 				entryFound = 1;
-				printf("%c", next);
+				string[stringPosition++] = next;
 			}
 		}
 		if (entryFound) {
-			printf("\nReached End of Line.\n");
+			ret->entries[currentEntryPosition++] = currentEntry;
+
+			currentEntry = malloc(sizeof(struct entry));
+			currentEntry -> values = malloc(sizeof(union value *) * columns);
+			for (i = 0; i<columns; i++) {
+				currentEntry -> values[i] = malloc(sizeof(union value *));
+			}
+			currentValue = malloc(sizeof(union value));
+			currentValuePosition = 0;
 		}
 	}
 
 
-	return NULL;
+	return ret;
 }
 
 ///Parse first line of CSV and get array of data types for values.
-enum type *getTypes() {
+struct headerInfo getHeaderInfo() {
 
+	struct headerInfo ret;
+
+	char **columnNames = malloc(sizeof(char *) * columns);
 	enum type *types = malloc(sizeof(enum type) * columns);
 
-	char *currentInput = malloc(sizeof(char) * maxStringSize);
+	char *currentInput;
 	char nextChar;
 	int stringPosition, retPosition=0;
 	char newlineFound = 0;
@@ -56,6 +125,7 @@ enum type *getTypes() {
 	scanf(",");
 
 	while (!newlineFound) {
+		currentInput = malloc(sizeof(char) * maxStringSize);
 		stringPosition = 0;
 		while (scanf("%c", &nextChar) > 0) {
 			if (nextChar == ',') {
@@ -70,12 +140,14 @@ enum type *getTypes() {
 		}
 		//Add null-terminating 0 to end of String.
 		currentInput[stringPosition] = '\0';
-		types[retPosition++] = getTypeFromColumnName(currentInput);
+		types[retPosition] = getTypeFromColumnName(currentInput);
+		columnNames[retPosition++] = currentInput;
 	}
 
-	free(currentInput);
+	ret.columnNames = columnNames;
+	ret.types = types;
 
-	return types;
+	return ret;
 }
 
 enum type getTypeFromColumnName(char *name) {

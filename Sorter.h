@@ -27,13 +27,13 @@ const unsigned int maxEntries = 10000000;
 
 
 union value {
-	long numVal;
+	long intVal;
 	double decimalVal;
 	char *stringVal;
 };
 
 struct entry {
-	union value **values;
+	union value *values;
 };
 
 struct csv {
@@ -60,9 +60,18 @@ struct headerInfo {
 //
 ////Suggestion: prototype a mergesort function
 
+//CSV parsing methods
 struct csv *parseCSV();
 struct headerInfo getHeaderInfo();
+struct entry **getCSVEntries(enum type *columnTypes);
 enum type getTypeFromColumnName(char *name);
+
+//Debugging Methods
+void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber);
+
+//Sorting methods
 void mergesortMovieList(struct csv *list, char *query);
+
+//Output methods
 void printMovieList(struct csv *list);
 

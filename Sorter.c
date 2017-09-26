@@ -6,12 +6,15 @@
 int main(int argc, char **argv) {
 
 	struct csv *csv = parseCSV();
+	char *sortBy = argv[2];
 	
 	//Debug Command to test CSV Parser.
 	printRange(csv, 195, 215, 16);
 
 	freeCSV(csv);
 	
+	printf("Sorting by: %s\n", sortBy);
+
 	return 0;
 }
 
@@ -90,8 +93,6 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 	int currentValuePosition = 0;
 	struct entry *currentEntry;
 
-	int i;
-
 	//Loop through each line until end of file reached.
 	while (!eofReached) {
 		newlineFound = 0, stringPosition = 0, quotationMarksFound = 0;
@@ -147,7 +148,7 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 				break;
 			} else if (next == '"') {
 				//If quotation marks found, ignore any commas until next quotation mark found.
-				quotationMarksFound = 1 - quotationMarksFound;
+				quotationMarksFound = !quotationMarksFound;
 			} else if (next == ',' && !quotationMarksFound) {
 				currentString[stringPosition++] = '\0';
 				if (columnTypes[currentValuePosition] == string) {

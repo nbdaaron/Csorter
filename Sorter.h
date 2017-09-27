@@ -78,3 +78,7 @@ void printMovieList(struct csv *csv);
 //Cleanup methods
 void freeCSV(struct csv *csv);
 
+//Utility Methods
+char *addCharacterToString(char *string, char next, int position);
+struct entry **addEntryToArray(struct entry **array, struct entry *entry, int position);
+void setValue(union value *location, char *value, enum type dataType);

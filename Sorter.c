@@ -8,9 +8,8 @@ int main(int argc, char **argv) {
 	struct csv *csv = parseCSV();
 	char *sortBy = argv[2];
 
-	
 	//Debug Command to test CSV Parser.
-	printRange(csv, 196, 200, 0);
+	printRange(csv, 1505, 1515, 26);
 
 	freeCSV(csv);
 	
@@ -58,25 +57,19 @@ struct headerInfo getHeaderInfo() {
 			if (nextChar == ',') {
 				break;
 			} else if (nextChar == '\n' || nextChar == '\r') {
-				scanf("\r\n");
+				scanf("\r");
+				scanf("\n");
 				newlineFound = 1;
 				break;
 			}
-			if (stringPosition >= maxStringSize) {
-				maxStringSize *= 10;
-				currentInput = realloc(currentInput, sizeof(char) * maxStringSize);
-			}
-			currentInput[stringPosition] = nextChar;
-			stringPosition++;
+			currentInput = addCharacterToString(currentInput, nextChar, stringPosition++);
 		}
 		//Add null-terminating 0 to end of String.
-		if (stringPosition >= maxStringSize) {
-				maxStringSize *= 10;
-				currentInput = realloc(currentInput, sizeof(char) * maxStringSize);
-		}
-		currentInput[stringPosition] = '\0';
+		currentInput = addCharacterToString(currentInput, '\0', stringPosition);
 		types[retPosition] = getTypeFromColumnName(currentInput);
-		columnNames[retPosition++] = currentInput;
+		columnNames[retPosition] = currentInput;
+
+		retPosition++;
 	}
 
 	ret.columnNames = columnNames;
@@ -115,24 +108,14 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 			scanResult = scanf("%c", &next);
 			if (scanResult == EOF) {
 				eofReached = 1;
-				if (stringPosition >= maxStringSize) {
-					maxStringSize *= 10;
-					currentString = realloc(currentString, sizeof(char) * maxStringSize);
-				}
-				currentString[stringPosition++] = '\0';
 				if (stringPosition == 0) {
 					break;
 				}
-				if (columnTypes[currentValuePosition] == string) {
-					currentEntry -> values[currentValuePosition++].stringVal = currentString;
-				} else if (columnTypes[currentValuePosition] == integer) {
-					currentEntry -> values[currentValuePosition++].intVal = atoi(currentString);
-				} else if (columnTypes[currentValuePosition] == decimal) {
-					currentEntry -> values[currentValuePosition++].decimalVal = atof(currentString);
-				} else {
-					printf("Error: Unknown column type for column number %d.", currentValuePosition);
-					return NULL;
-				}
+				currentString = addCharacterToString(currentString, '\0', stringPosition);
+
+				setValue(&(currentEntry -> values[currentValuePosition]), currentString, columnTypes[currentValuePosition]);
+				currentValuePosition++;
+
 				stringPosition = 0;
 
 				currentString = malloc(sizeof(char)*maxStringSize);
@@ -144,21 +127,10 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 				if (stringPosition == 0) {
 					continue;
 				}
-				if (stringPosition >= maxStringSize) {
-					maxStringSize *= 10;
-					currentString = realloc(currentString, sizeof(char) * maxStringSize);
-				}
-				currentString[stringPosition++] = '\0';
-				if (columnTypes[currentValuePosition] == string) {
-					currentEntry -> values[currentValuePosition++].stringVal = currentString;
-				} else if (columnTypes[currentValuePosition] == integer) {
-					currentEntry -> values[currentValuePosition++].intVal = atoi(currentString);
-				} else if (columnTypes[currentValuePosition] == decimal) {
-					currentEntry -> values[currentValuePosition++].decimalVal = atof(currentString);
-				} else {
-					printf("Error: Unknown column type for column number %d.", currentValuePosition);
-					return NULL;
-				}
+				addCharacterToString(currentString, '\0', stringPosition);
+				setValue(&(currentEntry -> values[currentValuePosition]), currentString, columnTypes[currentValuePosition]);
+				currentValuePosition++;
+
 				stringPosition = 0;
 
 
@@ -169,21 +141,9 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 				//If quotation marks found, ignore any commas until next quotation mark found.
 				quotationMarksFound = !quotationMarksFound;
 			} else if (next == ',' && !quotationMarksFound) {
-				if (stringPosition >= maxStringSize) {
-					maxStringSize *= 10;
-					currentString = realloc(currentString, sizeof(char) * maxStringSize);
-				}
-				currentString[stringPosition++] = '\0';
-				if (columnTypes[currentValuePosition] == string) {
-					currentEntry -> values[currentValuePosition++].stringVal = currentString;
-				} else if (columnTypes[currentValuePosition] == integer) {
-					currentEntry -> values[currentValuePosition++].intVal = atoi(currentString);
-				} else if (columnTypes[currentValuePosition] == decimal) {
-					currentEntry -> values[currentValuePosition++].decimalVal = atof(currentString);
-				} else {
-					printf("Error: Unknown column type for column number %d.", currentValuePosition);
-					return NULL;
-				}
+				addCharacterToString(currentString, '\0', stringPosition);
+				setValue(&(currentEntry -> values[currentValuePosition]), currentString, columnTypes[currentValuePosition]);
+				currentValuePosition++;
 
 				//For now, if the CSV file has too many columns in a single row, ignore the rest of that row.
 				//Should be fixed when quotation marks are handled.
@@ -194,20 +154,12 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 
 				currentString = malloc(sizeof(char)*maxStringSize);
 			} else {
-				if (stringPosition >= maxStringSize) {
-					maxStringSize *= 10;
-					currentString = realloc(currentString, sizeof(char) * maxStringSize);
-				}
-				currentString[stringPosition++] = next;
+				addCharacterToString(currentString, next, stringPosition++);
 			}
 		}
 
-		if (currentEntryPosition >= maxEntries) {
-			maxEntries *= 10;
-			ret = realloc(ret, sizeof(struct entry) * maxEntries);
-		}
+		ret = addEntryToArray(ret, currentEntry, currentEntryPosition++);
 
-		ret[currentEntryPosition++] = currentEntry;
 		currentEntry = malloc(sizeof(struct entry));
 		currentEntry -> values = malloc(sizeof(union value) * columns);
 		currentValuePosition = 0;
@@ -309,4 +261,37 @@ void freeCSV(struct csv *csv) {
 
 	//Free CSV (Dynamically Allocated Struct)
 	free(csv);
+}
+
+char *addCharacterToString(char *string, char next, int position){
+	if (position >= maxStringSize) {
+		maxStringSize *= 10;
+		string = realloc(string, sizeof(char) * maxStringSize);
+	}
+	string[position] = next;
+
+	return string;
+}
+
+struct entry **addEntryToArray(struct entry **array, struct entry *entry, int position) {
+	if (position >= maxEntries) {
+		maxEntries *= 10;
+		array = realloc(array, sizeof(struct entry) * maxEntries);
+	}
+
+	array[position] = entry;
+
+	return array;
+}
+
+void setValue(union value *location, char *value, enum type dataType) {
+	if (dataType == string) {
+		location->stringVal = value;
+	} else if (dataType == integer) {
+		location->intVal = atoi(value);
+	} else if (dataType == decimal) {
+		location->decimalVal = atof(value);
+	} else {
+		printf("Error: Unknown column type for value: %s.", value);
+	}
 }

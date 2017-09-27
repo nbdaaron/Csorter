@@ -6,3 +6,6 @@ clean:
 
 run:
 	cat movie_metadata.csv | ./a.out -c color
+
+debug:
+	gcc Sorter.c -Wall -Werror -fsanitize=address -g

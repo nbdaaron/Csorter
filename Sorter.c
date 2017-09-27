@@ -7,9 +7,10 @@ int main(int argc, char **argv) {
 
 	struct csv *csv = parseCSV();
 	char *sortBy = argv[2];
+
 	
 	//Debug Command to test CSV Parser.
-	printRange(csv, 195, 215, 16);
+	printRange(csv, 196, 200, 0);
 
 	freeCSV(csv);
 	
@@ -61,10 +62,18 @@ struct headerInfo getHeaderInfo() {
 				newlineFound = 1;
 				break;
 			}
+			if (stringPosition >= maxStringSize) {
+				maxStringSize *= 10;
+				currentInput = realloc(currentInput, sizeof(char) * maxStringSize);
+			}
 			currentInput[stringPosition] = nextChar;
 			stringPosition++;
 		}
 		//Add null-terminating 0 to end of String.
+		if (stringPosition >= maxStringSize) {
+				maxStringSize *= 10;
+				currentInput = realloc(currentInput, sizeof(char) * maxStringSize);
+		}
 		currentInput[stringPosition] = '\0';
 		types[retPosition] = getTypeFromColumnName(currentInput);
 		columnNames[retPosition++] = currentInput;
@@ -106,8 +115,12 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 			scanResult = scanf("%c", &next);
 			if (scanResult == EOF) {
 				eofReached = 1;
+				if (stringPosition >= maxStringSize) {
+					maxStringSize *= 10;
+					currentString = realloc(currentString, sizeof(char) * maxStringSize);
+				}
 				currentString[stringPosition++] = '\0';
-				if (strlen(currentString) == 0) {
+				if (stringPosition == 0) {
 					break;
 				}
 				if (columnTypes[currentValuePosition] == string) {
@@ -126,8 +139,14 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 				break;
 			}
 			if (next == '\r' || next == '\n') {
-				if (strlen(currentString) == 0) {
+				scanf("\r");
+				scanf("\n");
+				if (stringPosition == 0) {
 					continue;
+				}
+				if (stringPosition >= maxStringSize) {
+					maxStringSize *= 10;
+					currentString = realloc(currentString, sizeof(char) * maxStringSize);
 				}
 				currentString[stringPosition++] = '\0';
 				if (columnTypes[currentValuePosition] == string) {
@@ -150,6 +169,10 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 				//If quotation marks found, ignore any commas until next quotation mark found.
 				quotationMarksFound = !quotationMarksFound;
 			} else if (next == ',' && !quotationMarksFound) {
+				if (stringPosition >= maxStringSize) {
+					maxStringSize *= 10;
+					currentString = realloc(currentString, sizeof(char) * maxStringSize);
+				}
 				currentString[stringPosition++] = '\0';
 				if (columnTypes[currentValuePosition] == string) {
 					currentEntry -> values[currentValuePosition++].stringVal = currentString;
@@ -171,11 +194,20 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 
 				currentString = malloc(sizeof(char)*maxStringSize);
 			} else {
+				if (stringPosition >= maxStringSize) {
+					maxStringSize *= 10;
+					currentString = realloc(currentString, sizeof(char) * maxStringSize);
+				}
 				currentString[stringPosition++] = next;
 			}
 		}
-		ret[currentEntryPosition++] = currentEntry;
 
+		if (currentEntryPosition >= maxEntries) {
+			maxEntries *= 10;
+			ret = realloc(ret, sizeof(struct entry) * maxEntries);
+		}
+
+		ret[currentEntryPosition++] = currentEntry;
 		currentEntry = malloc(sizeof(struct entry));
 		currentEntry -> values = malloc(sizeof(union value) * columns);
 		currentValuePosition = 0;
@@ -220,6 +252,9 @@ void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber) {
 		columnTypeAsString = "Integer";
 	} else if (columnType == decimal) {
 		columnTypeAsString = "Decimal";
+	} else {
+		printf("Error: Unknown type printing range.");
+		return;
 	}
 
 	printf("Printing Rows %d to %d.\n", fromRow, toRow);

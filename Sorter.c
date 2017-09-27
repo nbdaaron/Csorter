@@ -8,12 +8,15 @@ int main(int argc, char **argv) {
 	struct csv *csv = parseCSV();
 	char *sortBy = argv[2];
 
+	printf("Sorting by: %s\n", sortBy);
+	
+	mergesortMovieList(csv, sortBy);
+	printMovieList(csv);
+
 	//Debug Command to test CSV Parser.
 	printRange(csv, 1505, 1515, 26);
 
 	freeCSV(csv);
-	
-	printf("Sorting by: %s\n", sortBy);
 
 	return 0;
 }

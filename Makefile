@@ -1,5 +1,5 @@
 all:
-	gcc Sorter.c -Wall -Werror -fsanitize=address
+	gcc Sorter.c -O3
 
 clean:
 	rm a.out

@@ -11,10 +11,10 @@ const unsigned int doubleValuesSize = 2;
 const unsigned int columns = 28;
 
 //Maximum allowed number of characters for input through scanf.
-unsigned int maxStringSize = 1000;
+unsigned int maxStringSize = 5000;
 
 //Maximum allowed number of movies for input through scanf.
-unsigned int maxEntries = 100;
+unsigned int maxEntries = 10000;
 
 
 /*****

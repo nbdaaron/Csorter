@@ -49,6 +49,7 @@ enum type {
 	error = -1
 };
 
+//I dont have to worry about this method (Kelvin)
 struct headerInfo {
 	enum type *types;
 	char **columnNames;

@@ -232,10 +232,32 @@ void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber) {
 }
 
 void mergesortMovieList(struct csv *csv, char *query) {
+	//implement
+	// 1. parse the char *query string
+	// 2. find the query string in the struct csv pointer->char **columnNames, return the indexed location
+	// 3. sort the struct entry **entries
+	// 4. sort the rows of entries, but compare using the double dereferenced entries at indexed location with strcom()
+	char **columnNames = csv->columnNames; //array of strings
+	int columnLength = sizeof(columnNames)/sizeof(*columnNames);
+	int sortingIndex;
+	int i;
+	for (i=0;i<columnLength;i++){
+		if (strcmp(columnNames[i], query)==0) {
+			break;
+		}
+	}
+	
+	helperMergeSort()
+	
 	return;
 }
 
+void 
+
+
 void printMovieList(struct csv *csv) {
+	//implement
+	
 	return;
 }
 

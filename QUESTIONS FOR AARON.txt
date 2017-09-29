@@ -1,0 +1,1 @@
+in parseCSV, how can you malloc sizeof struct csv -- if you dont know how big the csv is yet

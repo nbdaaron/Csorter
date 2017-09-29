@@ -240,19 +240,74 @@ void mergesortMovieList(struct csv *csv, char *query) {
 	char **columnNames = csv->columnNames; //array of strings
 	int columnLength = sizeof(columnNames)/sizeof(*columnNames);
 	int sortingIndex;
-	int i;
+	int i; //i is the index to be sorted upon
 	for (i=0;i<columnLength;i++){
 		if (strcmp(columnNames[i], query)==0) {
 			break;
 		}
 	}
 	
-	helperMergeSort()
+	// split arrays in half
+	// call splitArray on both
+	// 
+	
+	struct entry** entries = csv->entries;
+	long low = 0;
+	long high = sizeof(entries)/sizeof(*entries);
+	MergeSort(low, high-1, entries); //entries is a pointer to the array of pointers 
 	
 	return;
 }
 
-void 
+void MergeSort(long low, long high, struct entry** entries, int compareIndex){
+	if (low < high){
+		//only manipulate "pointers"
+		MergeSort(low, ((low+high)/2)-1, entries, compareIndex);
+		MergeSort((low+high)/2, high, entries, compareIndex);
+		MergeParts(low, high, entries, compareIndex);
+	}
+}
+
+void MergeParts(long low, long high, struct entry** entries, int compareIndex){
+	//take two sorted arrays, merge them together
+	//how do you put two adjacent, sorted arrays together
+	// (low+high)/2 is part of the lower array
+	long index1 = low;
+	long  mid = (low+high)/2; //mid is part of the "upper" array
+	long index2 = high;
+	
+	//dynamically create an array of pointers for the next loop
+	struct entry *tempArray;
+	tempArray = malloc(sizeof(entry)*(mid-low+1)) //allocate memory for the number of structs the lower array has
+	//check if memory was allocated
+	if (tempArray==0){ //since 0 is false, tempArray will be 0 if malloc fails
+		printf("Error in allocation of memory\n");
+	}
+	//copy the lower values into a new array
+	for (int counter=0; counter <= mid; counter++) {
+		tempArray[counter] = entries[i];
+	}
+	
+	// pairwise comparisons and reordering
+	long insertLocation = low
+	while (index1 <= mid-1 && index2 <= high) {
+		//check logic: @Aaron
+		//take pointer to array of pointers, increment by index1,2; then dereference to get secondary pointer
+		//then add the compareIndex to the secondary pointer to get a pointer to the things we actually want to compare
+		//dereference to get the value, then compare with strcmp
+		if (strcmp(*((*(tempArray + index1))+compareIndex),*((*(entries + index2))+compareIndex))<0) { //if the lower list has the smaller value
+			
+			index1++;
+		} else { //if the higher list has the smalller value
+			
+			index2++
+		}
+		insertLocation++;
+	}
+	
+	//check if LOWER!! list has extra entries left, append to end
+	
+} 
 
 
 void printMovieList(struct csv *csv) {

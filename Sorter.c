@@ -347,7 +347,6 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	//DONT FORGET TO FREE THE MALLOCED ARRAY
 	int j;
 	for (j=0; j<mid-low+1; j++) {
-		free(tempArray[j]->values);
 		free(tempArray[j]);
 	}
 	printf("Flag 6\n");

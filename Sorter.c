@@ -327,7 +327,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 		//dereference to get the value, then compare with strcmp
 		printf("Flag 3--, Comparison Below\n");
 		
-		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
+		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),csv->columnTypes[compareIndex])==-1) {
 			//if the lower list has the smaller value
 			entries[insertLocation] = tempArray[index1];
 			index1++;
@@ -367,7 +367,7 @@ int compareValue(union value *location1, union value *location2, enum type dataT
 			return -1; //first value is smaller
 		}
 	} else if (dataType == integer) {
-		printf("%d%d\n", location1->intVal, location2->intVal);
+		printf("%ld%ld\n", location1->intVal, location2->intVal);
 		if ((location1->intVal) - (location2->intVal)<0) {
 			return -1; //first value is smaller
 		}
@@ -377,7 +377,7 @@ int compareValue(union value *location1, union value *location2, enum type dataT
 			return -1; //first value is smaller
 		}
 	} else {
-		printf("Error: Unknown column type for value: %s.\n", value);
+		printf("Error: compareValue\n");
 	}
 	return 1; //first value is bigger
 }

@@ -85,6 +85,9 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex);
 //Sorting method: regrouping
 void MergeParts(long low, long high, struct entry** entries, int compareIndex);
 
+//Comparing Values in an entry
+int compareValue(union value *location1, union value *location2, enum type dataType);
+
 //Output methods
 void printMovieList(struct csv *csv, int compareIndex);
 

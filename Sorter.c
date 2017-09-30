@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 
 	printf("Sorting by: %s\n", sortBy);
 	
-	int compareIndex = mergesortMovieList(csv, sortBy);
+	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
 	printMovieList(csv, compareIndex);
 
 	//Debug Command to test CSV Parser.
@@ -240,7 +240,7 @@ void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber) {
 
 }
 
-int mergesortMovieList(struct csv *csv, char *query) {
+int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	//implement
 	// 1. parse the char *query string
 	// 2. find the query string in the struct csv pointer->char **columnNames, return the indexed location
@@ -272,24 +272,24 @@ int mergesortMovieList(struct csv *csv, char *query) {
 	long high = csv->numEntries-1;
 	printf("sizeof(entries)%d\n", csv->numEntries-1);
 	//return i;
-	MergeSort(low, high, entries, i); //entries is a pointer to the array of pointers 
+	MergeSort(low, high, entries, i, columnTypes); //entries is a pointer to the array of pointers 
 	
 	return i;
 }
 
-void MergeSort(long low, long high, struct entry** entries, int compareIndex){
+void MergeSort(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
 	printf("%ld,%ld\n", low, high);
 	if (low < high){
 		//only manipulate "pointers"
 		sleep(1);
-		MergeSort(low, ((low+high)/2), entries, compareIndex);
-		MergeSort(((low+high)/2)+1, high, entries, compareIndex);
-		MergeParts(low, high, entries, compareIndex);
+		MergeSort(low, ((low+high)/2), entries, compareIndex, columnTypes);
+		MergeSort(((low+high)/2)+1, high, entries, compareIndex, columnTypes);
+		MergeParts(low, high, entries, compareIndex, columnTypes);
 	}
 	return;
 }
 
-void MergeParts(long low, long high, struct entry** entries, int compareIndex){
+void MergeParts(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
 	printf("DEBUG, MERGE CALLED\n");
 	//take two sorted arrays, merge them together
 	//how do you put two adjacent, sorted arrays together
@@ -327,7 +327,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 		//dereference to get the value, then compare with strcmp
 		printf("Flag 3--, Comparison Below\n");
 		
-		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),csv->columnTypes[compareIndex])==-1) {
+		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
 			//if the lower list has the smaller value
 			entries[insertLocation] = tempArray[index1];
 			index1++;
@@ -342,7 +342,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 	
 	//check if LOWER!! list has extra entries left, append to end
 	while (index2 <= high) {
-		entries[insertLocation] = *(entries + index2);
+		entries[insertLocation] = entries[index2];
 		index2++;
 		insertLocation++;
 	}

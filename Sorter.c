@@ -290,7 +290,7 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex, en
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	printf("DEBUG, MERGE CALLED, low, high\n", low, high);
+	printf("DEBUG, MERGE CALLED, low, high%ld%ld\n", low, high);
 	//take two sorted arrays, merge them together
 	//how do you put two adjacent, sorted arrays together
 	// (low+high)/2 is part of the lower array

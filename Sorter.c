@@ -290,7 +290,7 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex, en
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	printf("DEBUG, MERGE CALLED\n");
+	printf("DEBUG, MERGE CALLED, low, high\n", low, high);
 	//take two sorted arrays, merge them together
 	//how do you put two adjacent, sorted arrays together
 	// (low+high)/2 is part of the lower array
@@ -321,7 +321,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		//take pointer to array of pointers, increment by index1,2; then dereference to get secondary pointer
 		//then add the compareIndex to the secondary pointer to get a pointer to the things we actually want to compare
 		//dereference to get the value, then compare with strcmp
-		printf("Flag 3--, Comparison Below\n");
+		printf("Flag 3--, Comparison Below, index1, index2 %ld%ld\n", index1, index2);
 		
 		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
 			//if the lower list has the smaller value

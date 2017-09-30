@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Sorter.h"
+#include <unistd.h>
 
 int main(int argc, char **argv) {
 
@@ -245,17 +246,19 @@ int mergesortMovieList(struct csv *csv, char *query) {
 	// 2. find the query string in the struct csv pointer->char **columnNames, return the indexed location
 	// 3. sort the struct entry **entries
 	// 4. sort the rows of entries, but compare using the double dereferenced entries at indexed location with strcom()
+	
 	char **columnNames = csv->columnNames; //array of strings
-	int columnLength = sizeof(columnNames)/sizeof(*columnNames);
-	//int sortingIndex;
+// int columnLength = sizeof(columnNames)/sizeof(*columnNames);
+	
 	int i; //i is the index to be sorted upon
-	for (i=0; i < columnLength; i++){
+	for (i=0; i < columns; i++){
 		if (strcmp(columnNames[i], query)==0) {
 			break;
 		}
 	}
+	printf("COLUMN THAT MATCHES SEARCH%d\n",i);
 	//check if header is found
-	if (i == columnLength){
+	if (i == columns){
 		printf("Error, could not find query in column names\n");
 		exit(0);
 	}
@@ -266,20 +269,21 @@ int mergesortMovieList(struct csv *csv, char *query) {
 	
 	struct entry** entries = csv->entries;
 	long low = 0;
-	long high = csv->numEntries;
-	printf("sizeof(entries)%ld\n", csv->numEntries);
-	return 0;
+	long high = csv->numEntries-1;
+	printf("sizeof(entries)%d\n", csv->numEntries-1);
+	//return i;
 	MergeSort(low, high, entries, i); //entries is a pointer to the array of pointers 
 	
 	return i;
 }
 
 void MergeSort(long low, long high, struct entry** entries, int compareIndex){
+	printf("%ld,%ld\n", low, high);
 	if (low < high){
 		//only manipulate "pointers"
-		printf("%ld,%ld\n", low, high);
-		MergeSort(low, ((low+high)/2)-1, entries, compareIndex);
-		MergeSort((low+high)/2, high, entries, compareIndex);
+		sleep(1);
+		MergeSort(low, ((low+high)/2), entries, compareIndex);
+		MergeSort(((low+high)/2)+1, high, entries, compareIndex);
 		MergeParts(low, high, entries, compareIndex);
 	}
 	return;
@@ -295,7 +299,13 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 	
 	//dynamically create an array of pointers for the next loop
 	struct entry **tempArray;
-	tempArray = malloc(sizeof(*entries)*(mid-low+1)); //allocate memory for the number of structs the lower array has
+	struct entry *newEntry;
+	int i;
+	for (i=0;i<high-low+1;i++){
+		newEntry = malloc(sizeof(struct entry));
+		newEntry->values = malloc(sizeof(union value)*columns);
+	}
+	tempArray = malloc(sizeof(struct entry)*(mid-low+1)); //allocate memory for the number of structs the lower array has
 	//check if memory was allocated
 	if (tempArray==0){ //since 0 is false, tempArray will be 0 if malloc fails
 		printf("Error in allocation of memory\n");
@@ -340,10 +350,11 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 
 void printMovieList(struct csv *csv, int compareIndex) {
 	struct entry** entries = csv->entries;
-	long size = csv->numEntries;
+	long size = csv->numEntries-1;
 	int i;
+	//printf("compareIndex=%d\n",compareIndex);
 	for (i=0; i<size; i++){
-		printf("%s\n", (entries[i]->values+compareIndex)->stringVal);
+		printf("%s\n", ((entries[i]->values)+compareIndex)->stringVal);
 	}
 	return;
 }
@@ -404,6 +415,6 @@ void setValue(union value *location, char *value, enum type dataType) {
 	} else if (dataType == decimal) {
 		location->decimalVal = atof(value);
 	} else {
-		printf("Error: Unknown column type for value: %s.", value);
+		printf("Error: Unknown column type for value: %s.\n", value);
 	}
 }

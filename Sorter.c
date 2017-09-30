@@ -10,14 +10,14 @@ int main(int argc, char **argv) {
 
 	printf("Sorting by: %s\n", sortBy);
 	
-	mergesortMovieList(csv, sortBy);
-	printMovieList(csv);
+	int compareIndex = mergesortMovieList(csv, sortBy);
+	printMovieList(csv, compareIndex);
 
 	//Debug Command to test CSV Parser.
-	printRange(csv, 1505, 1515, 26);
+	//printRange(csv, 1505, 1515, 26);
 
 	freeCSV(csv);
-
+	
 	return 0;
 }
 
@@ -231,7 +231,7 @@ void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber) {
 
 }
 
-void mergesortMovieList(struct csv *csv, char *query) {
+int mergesortMovieList(struct csv *csv, char *query) {
 	//implement
 	// 1. parse the char *query string
 	// 2. find the query string in the struct csv pointer->char **columnNames, return the indexed location
@@ -239,12 +239,17 @@ void mergesortMovieList(struct csv *csv, char *query) {
 	// 4. sort the rows of entries, but compare using the double dereferenced entries at indexed location with strcom()
 	char **columnNames = csv->columnNames; //array of strings
 	int columnLength = sizeof(columnNames)/sizeof(*columnNames);
-	int sortingIndex;
+	//int sortingIndex;
 	int i; //i is the index to be sorted upon
-	for (i=0;i<columnLength;i++){
+	for (i=0; i < columnLength; i++){
 		if (strcmp(columnNames[i], query)==0) {
 			break;
 		}
+	}
+	//check if header is found
+	if (i == columnLength){
+		printf("Error, could not find query in column names\n");
+		exit(0);
 	}
 	
 	// split arrays in half
@@ -253,10 +258,10 @@ void mergesortMovieList(struct csv *csv, char *query) {
 	
 	struct entry** entries = csv->entries;
 	long low = 0;
-	long high = sizeof(entries)/sizeof(*entries);
-	MergeSort(low, high-1, entries); //entries is a pointer to the array of pointers 
+	long high = sizeof(entries)/sizeof(*entries)-1;
+	MergeSort(low, high-1, entries, i); //entries is a pointer to the array of pointers 
 	
-	return;
+	return i;
 }
 
 void MergeSort(long low, long high, struct entry** entries, int compareIndex){
@@ -266,6 +271,7 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex){
 		MergeSort((low+high)/2, high, entries, compareIndex);
 		MergeParts(low, high, entries, compareIndex);
 	}
+	return;
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex){
@@ -277,42 +283,55 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 	long index2 = high;
 	
 	//dynamically create an array of pointers for the next loop
-	struct entry *tempArray;
-	tempArray = malloc(sizeof(entry)*(mid-low+1)) //allocate memory for the number of structs the lower array has
+	struct entry **tempArray;
+	tempArray = malloc(sizeof(*entries)*(mid-low+1)); //allocate memory for the number of structs the lower array has
 	//check if memory was allocated
 	if (tempArray==0){ //since 0 is false, tempArray will be 0 if malloc fails
 		printf("Error in allocation of memory\n");
+		exit(0);
 	}
 	//copy the lower values into a new array
 	for (int counter=0; counter <= mid; counter++) {
-		tempArray[counter] = entries[i];
+		tempArray[counter] = entries[counter];
 	}
 	
 	// pairwise comparisons and reordering
-	long insertLocation = low
+	long insertLocation = low;
 	while (index1 <= mid-1 && index2 <= high) {
 		//check logic: @Aaron
 		//take pointer to array of pointers, increment by index1,2; then dereference to get secondary pointer
 		//then add the compareIndex to the secondary pointer to get a pointer to the things we actually want to compare
 		//dereference to get the value, then compare with strcmp
-		if (strcmp(*((*(tempArray + index1))+compareIndex),*((*(entries + index2))+compareIndex))<0) { //if the lower list has the smaller value
-			
+		if (strcmp((tempArray[index1]->values+compareIndex)->stringVal,(entries[index2]->values+compareIndex)->stringVal)<0) { //if the lower list has the smaller value
+			*(entries+insertLocation) = *(tempArray + index1);
 			index1++;
 		} else { //if the higher list has the smalller value
-			
-			index2++
+			*(entries+insertLocation) = *(entries + index2);
+			index2++;
 		}
 		insertLocation++;
 	}
 	
 	//check if LOWER!! list has extra entries left, append to end
+	while (index2 <= high) {
+		entries[insertLocation] = *(entries + index2);
+		index2++;
+		insertLocation++;
+	}
+	//dont need to check if higher is there or not because it's already there
 	
+	//DONT FORGET TO FREE THE MALLOCED ARRAY
+	free(tempArray);
+	return;
 } 
 
 
-void printMovieList(struct csv *csv) {
-	//implement
-	
+void printMovieList(struct csv *csv, int compareIndex) {
+	struct entry** entries = csv->entries;
+	long size = sizeof(entries)/sizeof(*entries);
+	for (int i=0; i<size; i++){
+		printf("%s\n", (entries[i]->values+compareIndex)->stringVal);
+	}
 	return;
 }
 

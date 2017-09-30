@@ -70,11 +70,17 @@ enum type getTypeFromColumnName(char *name);
 //Debugging Methods
 void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber);
 
-//Sorting methods
-void mergesortMovieList(struct csv *csv, char *query);
+//Sorting method: setup variables
+int mergesortMovieList(struct csv *csv, char *query);
+
+//Sorting method: recursive call, splits up array
+void MergeSort(long low, long high, struct entry** entries, int compareIndex);
+
+//Sorting method: regrouping
+void MergeParts(long low, long high, struct entry** entries, int compareIndex);
 
 //Output methods
-void printMovieList(struct csv *csv);
+void printMovieList(struct csv *csv, int compareIndex);
 
 //Cleanup methods
 void freeCSV(struct csv *csv);

@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 	//printRange(csv, 1505, 1515, 26);
 
 	freeCSV(csv);
-	
+	printf("Sort\n");
 	return 0;
 }
 
@@ -291,7 +291,8 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 		exit(0);
 	}
 	//copy the lower values into a new array
-	for (int counter=0; counter <= mid; counter++) {
+	int counter;
+	for (counter=0; counter <= mid; counter++) {
 		tempArray[counter] = entries[counter];
 	}
 	
@@ -329,7 +330,8 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 void printMovieList(struct csv *csv, int compareIndex) {
 	struct entry** entries = csv->entries;
 	long size = sizeof(entries)/sizeof(*entries);
-	for (int i=0; i<size; i++){
+	int i;
+	for (i=0; i<size; i++){
 		printf("%s\n", (entries[i]->values+compareIndex)->stringVal);
 	}
 	return;

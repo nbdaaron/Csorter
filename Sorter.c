@@ -269,7 +269,7 @@ int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	
 	struct entry** entries = csv->entries;
 	long low = 0;
-	long high = csv->numEntries-1;
+	long high = csv->numEntries-1-1;
 	printf("sizeof(entries)%d\n", csv->numEntries-1);
 	//return i;
 	MergeSort(low, high, entries, i, columnTypes); //entries is a pointer to the array of pointers 

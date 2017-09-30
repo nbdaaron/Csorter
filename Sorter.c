@@ -259,6 +259,7 @@ int mergesortMovieList(struct csv *csv, char *query) {
 	struct entry** entries = csv->entries;
 	long low = 0;
 	long high = sizeof(entries)/sizeof(*entries)-1;
+	printf("sizeof(entries) and sizeof(*entries)%ld%ld\n", sizeof(entries),sizeof(*entries));
 	MergeSort(low, high-1, entries, i); //entries is a pointer to the array of pointers 
 	
 	return i;
@@ -267,6 +268,7 @@ int mergesortMovieList(struct csv *csv, char *query) {
 void MergeSort(long low, long high, struct entry** entries, int compareIndex){
 	if (low < high){
 		//only manipulate "pointers"
+		printf("%ld,%ld\n", low, high);
 		MergeSort(low, ((low+high)/2)-1, entries, compareIndex);
 		MergeSort((low+high)/2, high, entries, compareIndex);
 		MergeParts(low, high, entries, compareIndex);

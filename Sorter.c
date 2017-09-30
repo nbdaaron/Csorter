@@ -304,7 +304,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	struct entry **tempArray;
 	tempArray = malloc(sizeof(struct entry)*(mid-low+1)); //allocate memory for the number of structs the lower array has
 	int i;
-	for (i=0; i<mid-low; i++){
+	for (i=0; i<mid-low+1; i++){
 		tempArray[i] = entries[i];
 	}
 

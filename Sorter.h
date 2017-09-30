@@ -40,6 +40,7 @@ struct csv {
 	char **columnNames;
 	enum type *columnTypes;
 	struct entry **entries;
+	int numEntries;
 };
 
 enum type {
@@ -55,6 +56,11 @@ struct headerInfo {
 	char **columnNames;
 };
 
+struct entryInfo {
+	struct entry **entries;
+	int numEntries;
+};
+
 
 //Suggestion: define a struct that mirrors a record (row) of the data set
 //
@@ -64,7 +70,7 @@ struct headerInfo {
 //CSV parsing methods
 struct csv *parseCSV();
 struct headerInfo getHeaderInfo();
-struct entry **getCSVEntries(enum type *columnTypes);
+struct entryInfo getCSVEntries(enum type *columnTypes);
 enum type getTypeFromColumnName(char *name);
 
 //Debugging Methods

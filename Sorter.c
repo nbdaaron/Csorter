@@ -32,7 +32,11 @@ struct csv *parseCSV() {
 	ret->columnNames = headerInfo.columnNames;
 
 	//Create space for CSV entries.
-	ret->entries = getCSVEntries(ret->columnTypes);
+
+
+	struct entryInfo entryInfo = getCSVEntries(ret->columnTypes);
+	ret->entries = entryInfo.entries;
+	ret->numEntries = entryInfo.numEntries;
 
 	return ret;
 }
@@ -81,7 +85,7 @@ struct headerInfo getHeaderInfo() {
 	return ret;
 }
 
-struct entry **getCSVEntries(enum type *columnTypes) {
+struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 	//Return value: Array of Entry Pointers.
 	struct entry **ret = malloc(sizeof(struct entry) * maxEntries);
@@ -168,7 +172,11 @@ struct entry **getCSVEntries(enum type *columnTypes) {
 		currentValuePosition = 0;
 	}
 
-	return ret;
+	struct entryInfo ei;
+	ei.entries = ret;
+	ei.numEntries = currentEntryPosition;
+
+	return ei;
 }
 
 enum type getTypeFromColumnName(char *name) {

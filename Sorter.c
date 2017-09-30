@@ -305,11 +305,12 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	struct entry *newEntry;
 	tempArray = malloc(sizeof(struct entry)*(mid-low+1)); //allocate memory for the number of structs the lower array has
 	int i;
-	for (i=0;i<mid-low+1;i++){
+	for (i=0; i<mid-low; i++){
 		newEntry = malloc(sizeof(struct entry));
-		newEntry->values = malloc(sizeof(union value)*columns);
+		newEntry->values = malloc(sizeof(union value) * columns);
 		memcpy(newEntry->values, entries[i]->values, sizeof(union value));
 		tempArray[i] = newEntry;
+		printf("%s\n", tempArray[i]->values[0]);
 	}
 
 	//check if memory was allocated

@@ -322,8 +322,8 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		//then add the compareIndex to the secondary pointer to get a pointer to the things we actually want to compare
 		//dereference to get the value, then compare with strcmp
 		printf("Flag 3--, Comparison Below, index1, index2 %ld%ld\n", index1, index2);
-		printf("%s\n", (tempArray[indexTempArray]->values[compareIndex]).stringVal);
 		printf("%s\n", (entries[index2]->values[compareIndex]).stringVal);
+		printf("%s\n", (tempArray[indexTempArray]->values[compareIndex]).stringVal);
 		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
 			//if the lower list has the smaller value
 			entries[insertLocation] = tempArray[index1];

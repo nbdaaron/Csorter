@@ -290,49 +290,54 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex){
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex){
+	printf("DEBUG, MERGE CALLED\n");
 	//take two sorted arrays, merge them together
 	//how do you put two adjacent, sorted arrays together
 	// (low+high)/2 is part of the lower array
+	long indexTempArray = 0;
 	long index1 = low;
-	long  mid = (low+high)/2; //mid is part of the "upper" array
-	long index2 = high;
+	long  mid = (low+high)/2; //mid is part of the "lower" array
+	long index2 = mid+1;
+	//index2 goes up to and including high
 	
 	//dynamically create an array of pointers for the next loop
 	struct entry **tempArray;
 	struct entry *newEntry;
+	tempArray = malloc(sizeof(struct entry)*(mid-low+1)); //allocate memory for the number of structs the lower array has
 	int i;
-	for (i=0;i<high-low+1;i++){
+	for (i=0;i<mid-low+1;i++){
 		newEntry = malloc(sizeof(struct entry));
 		newEntry->values = malloc(sizeof(union value)*columns);
+		memcpy(newEntry->values, entries[i]->values, sizeof(union value));
+		tempArray[i] = newEntry;
 	}
-	tempArray = malloc(sizeof(struct entry)*(mid-low+1)); //allocate memory for the number of structs the lower array has
+
 	//check if memory was allocated
 	if (tempArray==0){ //since 0 is false, tempArray will be 0 if malloc fails
 		printf("Error in allocation of memory\n");
 		exit(0);
 	}
-	//copy the lower values into a new array
-	int counter;
-	for (counter=0; counter <= mid; counter++) {
-		tempArray[counter] = entries[counter];
-	}
-	
+	printf("Flag 2\n");
 	// pairwise comparisons and reordering
 	long insertLocation = low;
-	while (index1 <= mid-1 && index2 <= high) {
+	while (index1 <= mid && index2 <= high) { //the lower array gets the middle element
 		//check logic: @Aaron
 		//take pointer to array of pointers, increment by index1,2; then dereference to get secondary pointer
 		//then add the compareIndex to the secondary pointer to get a pointer to the things we actually want to compare
 		//dereference to get the value, then compare with strcmp
-		if (strcmp((tempArray[index1]->values+compareIndex)->stringVal,(entries[index2]->values+compareIndex)->stringVal)<0) { //if the lower list has the smaller value
+		printf("Flag 3--%s\n",&(tempArray[indexTempArray]->values[compareIndex])->stringVal);
+		
+		if (strcmp((tempArray[indexTempArray]->values+compareIndex)->stringVal,(entries[index2]->values+compareIndex)->stringVal)<0) { //if the lower list has the smaller value
 			*(entries+insertLocation) = *(tempArray + index1);
 			index1++;
+			indexTempArray++;
 		} else { //if the higher list has the smalller value
 			*(entries+insertLocation) = *(entries + index2);
 			index2++;
 		}
 		insertLocation++;
 	}
+	printf("Flag 4\n");
 	
 	//check if LOWER!! list has extra entries left, append to end
 	while (index2 <= high) {
@@ -343,6 +348,13 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 	//dont need to check if higher is there or not because it's already there
 	
 	//DONT FORGET TO FREE THE MALLOCED ARRAY
+	int j;
+	for (j=0; j<mid-low+1; j++) {
+		free(tempArray[j]->values);
+		free(tempArray[j]);
+	}
+	printf("Flag 6\n");
+		
 	free(tempArray);
 	return;
 } 

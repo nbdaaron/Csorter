@@ -1,5 +1,5 @@
 all:
-	gcc Sorter.c -O3
+	gcc Sorter.c -O3 -g
 
 clean:
 	rm a.out

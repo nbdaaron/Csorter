@@ -338,9 +338,9 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	printf("Flag 4\n");
 	
 	//check if LOWER!! list has extra entries left, append to end
-	while (index2 <= high) {
-		entries[insertLocation] = entries[index2];
-		index2++;
+	while (index1 <= mid) {
+		entries[insertLocation] = entries[index1];
+		index1++;
 		insertLocation++;
 	}
 	//dont need to check if higher is there or not because it's already there

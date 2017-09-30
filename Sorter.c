@@ -310,7 +310,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		newEntry->values = malloc(sizeof(union value) * columns);
 		memcpy(newEntry->values, entries[i]->values, sizeof(union value));
 		tempArray[i] = newEntry;
-		printf("%s\n", tempArray[i]->values[0]);
+		printf("%s\n", tempArray[i]->values[0]->stringVal);
 	}
 
 	//check if memory was allocated

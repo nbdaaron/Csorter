@@ -325,14 +325,15 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 		//take pointer to array of pointers, increment by index1,2; then dereference to get secondary pointer
 		//then add the compareIndex to the secondary pointer to get a pointer to the things we actually want to compare
 		//dereference to get the value, then compare with strcmp
-		printf("Flag 3--%s\n",&(tempArray[indexTempArray]->values[compareIndex])->stringVal);
+		printf("Flag 3--, Comparison Below\n");
 		
-		if (strcmp((tempArray[indexTempArray]->values+compareIndex)->stringVal,(entries[index2]->values+compareIndex)->stringVal)<0) { //if the lower list has the smaller value
-			*(entries+insertLocation) = *(tempArray + index1);
+		if (compareValue(&(tempArray[indexTempArray]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
+			//if the lower list has the smaller value
+			entries[insertLocation] = tempArray[index1];
 			index1++;
 			indexTempArray++;
 		} else { //if the higher list has the smalller value
-			*(entries+insertLocation) = *(entries + index2);
+			entries[insertLocation] = entries[index2];
 			index2++;
 		}
 		insertLocation++;
@@ -359,6 +360,39 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex){
 	return;
 } 
 
+int compareValue(union value *location1, union value *location2, enum type dataType) {
+	if (dataType == string) {
+		printf("%s%s\n", location1->stringVal, location2->stringVal);
+		if (strcmp(location1->stringVal,location2->stringVal)<0) {
+			return -1; //first value is smaller
+		}
+	} else if (dataType == integer) {
+		printf("%d%d\n", location1->intVal, location2->intVal);
+		if ((location1->intVal) - (location2->intVal)<0) {
+			return -1; //first value is smaller
+		}
+	} else if (dataType == decimal) {
+		printf("%f%f\n", location1->decimalVal, location2->decimalVal);
+		if ((location1->decimalVal) - (location2->decimalVal)<0) {
+			return -1; //first value is smaller
+		}
+	} else {
+		printf("Error: Unknown column type for value: %s.\n", value);
+	}
+	return 1; //first value is bigger
+}
+
+void setValue(union value *location, char *value, enum type dataType) {
+	if (dataType == string) {
+		location->stringVal = value;
+	} else if (dataType == integer) {
+		location->intVal = atoi(value);
+	} else if (dataType == decimal) {
+		location->decimalVal = atof(value);
+	} else {
+		printf("Error: Unknown column type for value: %s.\n", value);
+	}
+}
 
 void printMovieList(struct csv *csv, int compareIndex) {
 	struct entry** entries = csv->entries;
@@ -417,16 +451,4 @@ struct entry **addEntryToArray(struct entry **array, struct entry *entry, int po
 	array[position] = entry;
 
 	return array;
-}
-
-void setValue(union value *location, char *value, enum type dataType) {
-	if (dataType == string) {
-		location->stringVal = value;
-	} else if (dataType == integer) {
-		location->intVal = atoi(value);
-	} else if (dataType == decimal) {
-		location->decimalVal = atof(value);
-	} else {
-		printf("Error: Unknown column type for value: %s.\n", value);
-	}
 }

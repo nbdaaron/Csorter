@@ -362,23 +362,27 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 
 int compareValue(union value *location1, union value *location2, enum type dataType) {
 	if (dataType == string) {
-		printf("%s%s\n", location1->stringVal, location2->stringVal);
+		printf("String: %s%s\n", location1->stringVal, location2->stringVal);
 		if (strcmp(location1->stringVal,location2->stringVal)<0) {
+			printf("-1\n", );
 			return -1; //first value is smaller
 		}
 	} else if (dataType == integer) {
-		printf("%ld%ld\n", location1->intVal, location2->intVal);
+		printf("int: %ld%ld\n", location1->intVal, location2->intVal);
 		if ((location1->intVal) - (location2->intVal)<0) {
+			printf("-1\n", );
 			return -1; //first value is smaller
 		}
 	} else if (dataType == decimal) {
-		printf("%f%f\n", location1->decimalVal, location2->decimalVal);
+		printf("decimal: %f%f\n", location1->decimalVal, location2->decimalVal);
 		if ((location1->decimalVal) - (location2->decimalVal)<0) {
+			printf("-1\n", );
 			return -1; //first value is smaller
 		}
 	} else {
 		printf("Error: compareValue\n");
 	}
+	printf("1\n", );
 	return 1; //first value is bigger
 }
 

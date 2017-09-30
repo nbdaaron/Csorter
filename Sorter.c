@@ -302,10 +302,10 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	
 	//dynamically create an array of pointers for the next loop
 	struct entry **tempArray;
-	tempArray = malloc(sizeof(struct entry)*(mid-low+1)); //allocate memory for the number of structs the lower array has
+	tempArray = malloc(sizeof(struct entry)*(mid-low+2)); //allocate memory for the number of structs the lower array has
 	int i;
-	for (i=0; i<mid-low+1; i++){
-		tempArray[i] = entries[i];
+	for (i=0; i<mid-low+2; i++){
+		tempArray[i] = entries[index1+i];
 	}
 
 	//check if memory was allocated

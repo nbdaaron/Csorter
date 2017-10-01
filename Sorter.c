@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
 	//printf("Sorting by: %s\n", sortBy);
 	
-	printRange(csv, 0, 5, 1);
+	//printRange(csv, 0, 5, 1);
 	
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
 	//printMovieList(csv, 1);

@@ -5,7 +5,7 @@ clean:
 	rm a.out
 
 run1:
-	cat movie_metadata.csv | ./a.out -c color
+	cat movie_metadata.csv | ./a.out -c director_name
 
 run:
 	cat smallTest.csv | ./a.out -c director_name

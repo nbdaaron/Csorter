@@ -313,8 +313,8 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	for (i=0; i<mid-low+1; i++){
 		tempArray1[i] = entries[low+i];
 	}
-	for (i=mid-low+1; i<high; i++){
-		tempArray2[i - (mid-low+1)] = entries[low+i];
+	for (i=0; i<high-mid; i++){
+		tempArray2[i] = entries[mid+1+i];
 	}
 	//check if memory was allocated
 	if (tempArray1==NULL || tempArray2==NULL){ //since 0 is false, tempArray1 will be 0 if malloc fails

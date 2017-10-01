@@ -281,7 +281,7 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex, en
 	printf("%ld,%ld\n", low, high);
 	if (low < high){
 		//only manipulate "pointers"
-		sleep(1);
+		//sleep(1);
 		MergeSort(low, ((low+high)/2), entries, compareIndex, columnTypes);
 		MergeSort(((low+high)/2)+1, high, entries, compareIndex, columnTypes);
 		MergeParts(low, high, entries, compareIndex, columnTypes);

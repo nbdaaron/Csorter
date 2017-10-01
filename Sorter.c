@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Sorter.h"
-#include <unistd.h>
 
 int main(int argc, char **argv) {
 
@@ -258,7 +257,9 @@ int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	
 	int i; //i is the index to be sorted upon
 	for (i=0; i < columns; i++){
+		printf("I'm comparing %s and %s! :)\n", columnNames[i], query);
 		if (strcmp(columnNames[i], query)==0) {
+			printf("They match!!!!!!\n");
 			break;
 		}
 	}

@@ -165,6 +165,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 		currentEntry = malloc(sizeof(struct entry));
 		currentEntry -> values = malloc(sizeof(union value) * columns);
 		currentValuePosition = 0;
+		printf("Current Entry: %d\n", currentEntry);
 	}
 
 	struct entryInfo ei;

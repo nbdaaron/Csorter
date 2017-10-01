@@ -295,7 +295,9 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex, en
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	printf("DEBUG, MERGE CALLED, low, high%ld%ld\n", low, high);
+	printf("DEBUG, MERGE CALLED, low, high %ld %ld\n", low, high);
+	printf("HI\n");
+	printf("MERGE PARTS CALLED MA POINTER VALUE IS THIS: %p\n", entries[0]);
 	//take two sorted arrays, merge them together
 	//how do you put two adjacent, sorted arrays together
 	// (low+high)/2 is part of the lower array
@@ -319,15 +321,13 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		printf("Error in allocation of memory\n");
 		exit(0);
 	}
-	printf("Flag 2\n");
 	// pairwise comparisons and reordering
 	long insertLocation = low;
 	long index1 = low; //for the first temporary array
 	long index2 = mid+1; //for the second temporary array
 	//index2 goes up to and including high
 	while (index1 <= mid && index2 <= high) { //the lower array gets the middle element
-		printf("Flag 3--, Comparison Below, index1, index2 %ld%ld\n", index1, index2);
-		if (compareValue(&(tempArray1[index1]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
+		if (compareValue(&(tempArray1[index1-low]->values[compareIndex]),&(tempArray2[index2-(mid+1)]->values[compareIndex]),columnTypes[compareIndex])==-1) {
 			//if the lower list has the smaller value
 			entries[insertLocation] = tempArray1[index1-low];
 			index1++;
@@ -337,7 +337,6 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		}
 		insertLocation++;
 	}
-	printf("Flag 4\n");
 	
 	//check if LOWER!! list has extra entries left, append to end
 	while (index1 <= mid) {
@@ -351,13 +350,11 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		index2++;
 		insertLocation++;
 	}
-
 	//dont need to check if higher is there or not because it's already there
 	
 	//DONT FORGET TO FREE THE MALLOCED ARRAY
 	free(tempArray1);
 	free(tempArray2);
-	printf("Flag 6\n");
 	
 	return;
 } 

@@ -17,15 +17,7 @@ unsigned int maxStringSize = 5000;
 unsigned int maxEntries = 10000;
 
 
-/*****
- * *
- * *	Define structures and function prototypes for your sorter
- * *
- * *
- * *
- * ******/
-
-
+//unions and structs
 union value {
 	long intVal;
 	double decimalVal;
@@ -50,7 +42,6 @@ enum type {
 	error = -1
 };
 
-//I dont have to worry about this method (Kelvin)
 struct headerInfo {
 	enum type *types;
 	char **columnNames;
@@ -61,11 +52,6 @@ struct entryInfo {
 	int numEntries;
 };
 
-
-//Suggestion: define a struct that mirrors a record (row) of the data set
-//
-//
-////Suggestion: prototype a mergesort function
 
 //CSV parsing methods
 struct csv *parseCSV();

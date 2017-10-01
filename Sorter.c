@@ -387,13 +387,11 @@ void printCSV(struct csv *csv) {
 	long size = csv->numEntries-1;
 	int i;
 	int j;
-	//printf("compareIndex=%d\n",compareIndex);
 	for (i=0; i<size; i++){
 		for (j=0; j<columns; j++) {
 			if (j>0) {
 				printf(",");
 			}
-			
 			enum type columnType = csv->columnTypes[j];
 			if (columnType == string) {
 				printf("%s", entries[i]->values[j].stringVal);
@@ -402,7 +400,6 @@ void printCSV(struct csv *csv) {
 			} else if (columnType == decimal) {
 				printf("%f", entries[i]->values[j].decimalVal);
 			}
-			
 		}
 		printf("\n");
 	}
@@ -451,7 +448,6 @@ struct entry **addEntryToArray(struct entry **array, struct entry *entry, int po
 		maxEntries *= 10;
 		array = realloc(array, sizeof(struct entry) * maxEntries);
 	}
-
 	array[position] = entry;
 
 	return array;

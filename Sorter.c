@@ -299,7 +299,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	//dynamically create an array of pointers for the next loop
 	struct entry **tempArray1;
 	struct entry **tempArray2;
-	
+
 	tempArray1 = malloc(sizeof(struct entry *)*(mid-low+1)); //allocate memory for the number of structs the lower array has
 	tempArray2 = malloc(sizeof(struct entry *)*(high-mid));
 	int i;
@@ -329,7 +329,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 			entries[insertLocation] = tempArray1[index1-low];
 			index1++;
 		} else { //if the higher list has the smalller value
-			entries[insertLocation] = tempArray2[index2-mid+1];
+			entries[insertLocation] = tempArray2[index2-(mid+1)];
 			index2++;
 		}
 		insertLocation++;
@@ -344,7 +344,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	}
 
 	while (index2 <= high) {
-		entries[insertLocation] = tempArray2[index2-mid+1];
+		entries[insertLocation] = tempArray2[index2-(mid+1)];
 		index2++;
 		insertLocation++;
 	}

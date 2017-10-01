@@ -14,7 +14,10 @@ int main(int argc, char **argv) {
 	printf("%p\n", csv->entries[0]);
 
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
-	printMovieList(csv, 1);
+	//printMovieList(csv, 1);
+	//print the CSV instead
+	printCSV(csv, 1);
+	
 	printf("%d\n", compareIndex);
 
 	//printf("%p\n", csv->entries[0]);
@@ -406,6 +409,33 @@ void printMovieList(struct csv *csv, int compareIndex) {
 	//printf("compareIndex=%d\n",compareIndex);
 	for (i=0; i<size; i++){
 		printf("%s\n", (entries[i]->values[compareIndex]).stringVal);
+	}
+	return;
+}
+
+void printCSV(struct csv *csv, int compareIndex) {
+	struct entry** entries = csv->entries;
+	long size = csv->numEntries-1;
+	int i;
+	int j;
+	//printf("compareIndex=%d\n",compareIndex);
+	for (i=0; i<size; i++){
+		for (j=0; j<columns; j++) {
+			if (j>0) {
+				printf(",");
+			}
+			
+			enum type columnType = csv->columnTypes[j];
+			if (columnType == string) {
+				printf("%s", rowCounter, csv->entries[rowCounter]->values[columnNumber].stringVal);
+			} else if (columnType == integer) {
+				printf("%ld", rowCounter, csv->entries[rowCounter]->values[columnNumber].intVal);
+			} else if (columnType == decimal) {
+				printf("%f", rowCounter, csv->entries[rowCounter]->values[columnNumber].decimalVal);
+			}
+			
+		}
+		printf("\n");
 	}
 	return;
 }

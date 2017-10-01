@@ -8,17 +8,16 @@ int main(int argc, char **argv) {
 	struct csv *csv = parseCSV();
 	char *sortBy = argv[2];
 
-	printf("Sorting by: %s\n", sortBy);
+	//printf("Sorting by: %s\n", sortBy);
 	
 	printRange(csv, 0, 5, 1);
-	printf("%p\n", csv->entries[0]);
-
+	
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
 	//printMovieList(csv, 1);
 	//print the CSV instead
 	printCSV(csv, 1);
 	
-	printf("%d\n", compareIndex);
+	//printf("%d\n", compareIndex);
 
 	//printf("%p\n", csv->entries[0]);
 
@@ -26,7 +25,7 @@ int main(int argc, char **argv) {
 	//printRange(csv, 1505, 1515, 26);
 
 	freeCSV(csv);
-	printf("Program completed!\n");
+	//printf("Program completed!\n");
 	return 0;
 }
 
@@ -260,16 +259,16 @@ int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	
 	int i; //i is the index to be sorted upon
 	for (i=0; i < columns; i++){
-		printf("I'm comparing %s and %s! :)\n", columnNames[i], query);
+		//printf("I'm comparing %s and %s! :)\n", columnNames[i], query);
 		if (strcmp(columnNames[i], query)==0) {
-			printf("They match!!!!!!\n");
+			//printf("They match!!!!!!\n");
 			break;
 		}
 	}
-	printf("COLUMN THAT MATCHES SEARCH%d\n",i);
+	//printf("COLUMN THAT MATCHES SEARCH%d\n",i);
 	//check if header is found
 	if (i == columns){
-		printf("Error, could not find query in column names\n");
+		//printf("Error, could not find query in column names\n");
 		exit(0);
 	}
 	
@@ -280,7 +279,7 @@ int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	struct entry** entries = csv->entries;
 	long low = 0;
 	long high = csv->numEntries-1-1;
-	printf("sizeof(entries)%d\n", csv->numEntries-1);
+	//printf("sizeof(entries)%d\n", csv->numEntries-1);
 	//return i;
 	MergeSort(low, high, entries, i, columnTypes); //entries is a pointer to the array of pointers 
 	
@@ -288,7 +287,7 @@ int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 }
 
 void MergeSort(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	printf("%ld,%ld\n", low, high);
+	//printf("%ld,%ld\n", low, high);
 	if (low < high){
 		//only manipulate "pointers"
 		//sleep(1);
@@ -300,9 +299,9 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex, en
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	printf("DEBUG, MERGE CALLED, low, high %ld %ld\n", low, high);
-	printf("HI\n");
-	printf("MERGE PARTS CALLED MA POINTER VALUE IS THIS: %p\n", entries[0]);
+	//printf("DEBUG, MERGE CALLED, low, high %ld %ld\n", low, high);
+	//printf("HI\n");
+	//printf("MERGE PARTS CALLED MA POINTER VALUE IS THIS: %p\n", entries[0]);
 	//take two sorted arrays, merge them together
 	//how do you put two adjacent, sorted arrays together
 	// (low+high)/2 is part of the lower array
@@ -366,27 +365,27 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 
 int compareValue(union value *location1, union value *location2, enum type dataType) {
 	if (dataType == string) {
-		printf("String: %s%s\n", location1->stringVal, location2->stringVal);
+		//printf("String: %s%s\n", location1->stringVal, location2->stringVal);
 		if (strcmp(location1->stringVal,location2->stringVal)<0) {
-			printf("-1\n");
+			//printf("-1\n");
 			return -1; //first value is smaller
 		}
 	} else if (dataType == integer) {
-		printf("int: %ld%ld\n", location1->intVal, location2->intVal);
+		//printf("int: %ld%ld\n", location1->intVal, location2->intVal);
 		if ((location1->intVal) - (location2->intVal)<0) {
-			printf("-1\n");
+			//printf("-1\n");
 			return -1; //first value is smaller
 		}
 	} else if (dataType == decimal) {
-		printf("decimal: %f%f\n", location1->decimalVal, location2->decimalVal);
+		//printf("decimal: %f%f\n", location1->decimalVal, location2->decimalVal);
 		if ((location1->decimalVal) - (location2->decimalVal)<0) {
-			printf("-1\n");
+			//printf("-1\n");
 			return -1; //first value is smaller
 		}
 	} else {
 		printf("Error: compareValue\n");
 	}
-	printf("1\n");
+	//printf("1\n");
 	return 1; //first value is bigger
 }
 

@@ -427,11 +427,11 @@ void printCSV(struct csv *csv, int compareIndex) {
 			
 			enum type columnType = csv->columnTypes[j];
 			if (columnType == string) {
-				printf("%s", csv->entries[rowCounter]->values[columnNumber].stringVal);
+				printf("%s", csv->entries[i]->values[j].stringVal);
 			} else if (columnType == integer) {
-				printf("%ld", csv->entries[rowCounter]->values[columnNumber].intVal);
+				printf("%ld", csv->entries[i]->values[j].intVal);
 			} else if (columnType == decimal) {
-				printf("%f", csv->entries[rowCounter]->values[columnNumber].decimalVal);
+				printf("%f", csv->entries[i]->values[j].decimalVal);
 			}
 			
 		}

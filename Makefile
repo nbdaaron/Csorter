@@ -1,14 +1,11 @@
 all:
-	gcc Sorter.c -O3 -g
+	gcc Sorter.c -O3 -o sorter
 
 clean:
-	rm a.out
-
-run1:
-	cat movie_metadata.csv | ./a.out > results.csv -c director_name
+	rm sorter
 
 run:
-	cat smallTest.csv | ./a.out -c director_name
+	cat movie_metadata.csv | ./sorter > results.csv -c director_name
 
 debug:
-	gcc Sorter.c -Wall -Werror -fsanitize=address -g
+	gcc Sorter.c -Wall -Werror -fsanitize=address -g -o sorter

@@ -8,7 +8,7 @@ const char *doubleValues[] = {"imdb_score", "aspect_ratio"};
 const unsigned int doubleValuesSize = 2;
 
 //Number of columns in CSV file.
-const unsigned int columns = 28;
+const unsigned int columns = stringValuesSize + intValuesSize + doubleValuesSize;
 
 //Maximum allowed number of characters for input through scanf.
 unsigned int maxStringSize = 5000;

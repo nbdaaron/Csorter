@@ -5,15 +5,16 @@
 
 int main(int argc, char **argv) {
 	
+	//struct csv takes in the whole csv file
 	struct csv *csv = parseCSV();
 	char *sortBy = argv[2];
 	
-	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
-	
-	printCSV(csv, compareIndex);
+	//sorts csv by sortBy
+	mergesortMovieList(csv, sortBy, csv->columnTypes);
+	//prints out the whole csv in sorted order
+	printCSV(csv);
 	
 	freeCSV(csv);
-	
 	return 0;
 }
 
@@ -27,13 +28,11 @@ struct csv *parseCSV() {
 	ret->columnTypes = headerInfo.types;
 	ret->columnNames = headerInfo.columnNames;
 
-	//Create space for CSV entries.
-
-
+	//populate entries and total number of entries
 	struct entryInfo entryInfo = getCSVEntries(ret->columnTypes);
 	ret->entries = entryInfo.entries;
 	ret->numEntries = entryInfo.numEntries;
-
+	
 	return ret;
 }
 
@@ -235,50 +234,38 @@ void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber) {
 
 }
 
-int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
-	//implement
-	// 1. parse the char *query string
-	// 2. find the query string in the struct csv pointer->char **columnNames, return the indexed location
-	// 3. sort the struct entry **entries
-	// 4. sort the rows of entries, but compare using the double dereferenced entries at indexed location with strcom()
+void mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
+	//array of strings
+	char **columnNames = csv->columnNames; 
 	
-	char **columnNames = csv->columnNames; //array of strings
-// int columnLength = sizeof(columnNames)/sizeof(*columnNames);
-	
-	int i; //i is the index to be sorted upon
+	//find the index of the desired field to sort by; color = 0, director_name = 1 ...
+	int i; 
 	for (i=0; i < columns; i++){
-		//printf("I'm comparing %s and %s! :)\n", columnNames[i], query);
 		if (strcmp(columnNames[i], query)==0) {
-			//printf("They match!!!!!!\n");
 			break;
 		}
 	}
-	//printf("COLUMN THAT MATCHES SEARCH%d\n",i);
+	
 	//check if header is found
 	if (i == columns){
-		//printf("Error, could not find query in column names\n");
+		printf("Error, could not find query in column names\n");
 		exit(0);
 	}
 	
-	// split arrays in half
-	// call splitArray on both
-	// 
-	
 	struct entry** entries = csv->entries;
 	long low = 0;
+	//numEntries includes the labels row (-1), to use Array indicies (-1)
 	long high = csv->numEntries-1-1;
-	//printf("sizeof(entries)%d\n", csv->numEntries-1);
-	//return i;
-	MergeSort(low, high, entries, i, columnTypes); //entries is a pointer to the array of pointers 
 	
+	//start mergeSort
+	MergeSort(low, high, entries, i, columnTypes);
 	return i;
 }
 
 void MergeSort(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	//printf("%ld,%ld\n", low, high);
+	//split up array until single blocks are made
 	if (low < high){
-		//only manipulate "pointers"
-		//sleep(1);
+		//lower array has the "mid" element
 		MergeSort(low, ((low+high)/2), entries, compareIndex, columnTypes);
 		MergeSort(((low+high)/2)+1, high, entries, compareIndex, columnTypes);
 		MergeParts(low, high, entries, compareIndex, columnTypes);
@@ -287,19 +274,15 @@ void MergeSort(long low, long high, struct entry** entries, int compareIndex, en
 }
 
 void MergeParts(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){
-	//printf("DEBUG, MERGE CALLED, low, high %ld %ld\n", low, high);
-	//printf("HI\n");
-	//printf("MERGE PARTS CALLED MA POINTER VALUE IS THIS: %p\n", entries[0]);
-	//take two sorted arrays, merge them together
-	//how do you put two adjacent, sorted arrays together
 	// (low+high)/2 is part of the lower array
-	long  mid = (low+high)/2; //mid is part of the "lower" array
+	long  mid = (low+high)/2;
 	
-	//dynamically create an array of pointers for the next loop
+	//dynamically create an array of pointers
 	struct entry **tempArray1;
 	struct entry **tempArray2;
-
-	tempArray1 = malloc(sizeof(struct entry *)*(mid-low+1)); //allocate memory for the number of structs the lower array has
+	
+	//copy the pointers from entries into tempArray1 and tempArray2
+	tempArray1 = malloc(sizeof(struct entry *)*(mid-low+1)); 
 	tempArray2 = malloc(sizeof(struct entry *)*(high-mid));
 	int i;
 	for (i=0; i<mid-low+1; i++){
@@ -308,43 +291,49 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	for (i=0; i<high-mid; i++){
 		tempArray2[i] = entries[mid+1+i];
 	}
-	//check if memory was allocated
-	if (tempArray1==NULL || tempArray2==NULL){ //since 0 is false, tempArray1 will be 0 if malloc fails
+	
+	//check if memory was not properly allocated by malloc
+	if (tempArray1==NULL || tempArray2==NULL){
 		printf("Error in allocation of memory\n");
 		exit(0);
 	}
-	// pairwise comparisons and reordering
+	
+	// insertLocation is the location in entries that will be overwritten
 	long insertLocation = low;
-	long index1 = low; //for the first temporary array
-	long index2 = mid+1; //for the second temporary array
-	//index2 goes up to and including high
+	//for the first temporary array
+	long index1 = low; 
+	//for the second temporary array
+	long index2 = mid+1; 
 	while (index1 <= mid && index2 <= high) { //the lower array gets the middle element
+		//compare succeeding elements in tempArray1 vs succeeding elements in tempArray2
+		//dereference tempArray(1,2) at an index, dereference and grab values, dereference and grab string, decimal, or float value
+		//compareValue returns -1 when element in tempArray1 is smaller and 1 whenelement in tempArray2 is bigger
 		if (compareValue(&(tempArray1[index1-low]->values[compareIndex]),&(tempArray2[index2-(mid+1)]->values[compareIndex]),columnTypes[compareIndex])==-1) {
-			//if the lower list has the smaller value
+			//if tempArray1 has the smaller value
 			entries[insertLocation] = tempArray1[index1-low];
 			index1++;
-		} else { //if the higher list has the smalller value
+		} else { //if tempArray2  has the smalller value
 			entries[insertLocation] = tempArray2[index2-(mid+1)];
 			index2++;
 		}
+		//insertLocation will never go out of bounds because the loop stops when all the values put back into entries from low to high 
 		insertLocation++;
 	}
 	
-	//check if LOWER!! list has extra entries left, append to end
+	//if tempArray1 still has more entries, put at the end of entries
 	while (index1 <= mid) {
 		entries[insertLocation] = tempArray1[index1-low];
 		index1++;
 		insertLocation++;
 	}
 
+	//if tempArray2 still has more entries, put at the end of entries
 	while (index2 <= high) {
 		entries[insertLocation] = tempArray2[index2-(mid+1)];
 		index2++;
 		insertLocation++;
 	}
-	//dont need to check if higher is there or not because it's already there
 	
-	//DONT FORGET TO FREE THE MALLOCED ARRAY
 	free(tempArray1);
 	free(tempArray2);
 	
@@ -352,29 +341,23 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 } 
 
 int compareValue(union value *location1, union value *location2, enum type dataType) {
+	//the values could be string, integer, or decimal
 	if (dataType == string) {
-		//printf("String: %s%s\n", location1->stringVal, location2->stringVal);
 		if (strcmp(location1->stringVal,location2->stringVal)<0) {
-			//printf("-1\n");
 			return -1; //first value is smaller
 		}
 	} else if (dataType == integer) {
-		//printf("int: %ld%ld\n", location1->intVal, location2->intVal);
 		if ((location1->intVal) - (location2->intVal)<0) {
-			//printf("-1\n");
 			return -1; //first value is smaller
 		}
 	} else if (dataType == decimal) {
-		//printf("decimal: %f%f\n", location1->decimalVal, location2->decimalVal);
 		if ((location1->decimalVal) - (location2->decimalVal)<0) {
-			//printf("-1\n");
 			return -1; //first value is smaller
 		}
 	} else {
 		printf("Error: compareValue\n");
 	}
-	//printf("1\n");
-	return 1; //first value is bigger
+	return 1; //first value is bigger or they are equal
 }
 
 void setValue(union value *location, char *value, enum type dataType) {
@@ -389,18 +372,17 @@ void setValue(union value *location, char *value, enum type dataType) {
 	}
 }
 
-void printMovieList(struct csv *csv, int compareIndex) {
+void printSortedColumn(struct csv *csv, int compareIndex) {
 	struct entry** entries = csv->entries;
 	long size = csv->numEntries-1;
 	int i;
-	//printf("compareIndex=%d\n",compareIndex);
 	for (i=0; i<size; i++){
 		printf("%s\n", (entries[i]->values[compareIndex]).stringVal);
 	}
 	return;
 }
 
-void printCSV(struct csv *csv, int compareIndex) {
+void printCSV(struct csv *csv) {
 	struct entry** entries = csv->entries;
 	long size = csv->numEntries-1;
 	int i;

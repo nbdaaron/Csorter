@@ -77,7 +77,7 @@ enum type getTypeFromColumnName(char *name);
 void printRange(struct csv *csv, int fromRow, int toRow, int columnNumber);
 
 //Sorting method: setup variables
-int mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes);
+void mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes);
 
 //Sorting method: recursive call, splits up array
 void MergeSort(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes);
@@ -89,8 +89,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 int compareValue(union value *location1, union value *location2, enum type dataType);
 
 //Output methods
-void printMovieList(struct csv *csv, int compareIndex);
-
+void printSortedColumn(struct csv *csv, int compareIndex);
 void printCSV(struct csv *csv, int compareIndex);
 
 //Cleanup methods

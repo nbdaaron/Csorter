@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	printf("%p\n", csv->entries[0]);
 
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
-	printMovieList(csv, compareIndex);
+	printMovieList(csv, 1);
 	printf("%d\n", compareIndex);
 
 	//printf("%p\n", csv->entries[0]);

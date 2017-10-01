@@ -375,6 +375,14 @@ void printCSV(struct csv *csv) {
 	long size = csv->numEntries-1;
 	int i;
 	int j;
+	for (i=0;i<columns;i++) {
+		if (i>0) {
+			printf(",");
+		}
+		printf("%s", csv->columnNames[i]);
+	}
+	printf("\n");
+	
 	for (i=0; i<size; i++){
 		for (j=0; j<columns; j++) {
 			if (j>0) {

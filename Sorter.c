@@ -404,7 +404,7 @@ void printMovieList(struct csv *csv, int compareIndex) {
 	int i;
 	//printf("compareIndex=%d\n",compareIndex);
 	for (i=0; i<size; i++){
-		printf("%s\n", (entries[i]->values[compareIndex])->stringVal);
+		printf("%s\n", (entries[i]->values[compareIndex]).stringVal);
 	}
 	return;
 }

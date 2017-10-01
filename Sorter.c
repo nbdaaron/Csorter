@@ -16,8 +16,9 @@ int main(int argc, char **argv) {
 
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
 	printMovieList(csv, compareIndex);
+	printf("%d\n", compareIndex);
 
-	printf("%p\n", csv->entries[0]);
+	//printf("%p\n", csv->entries[0]);
 
 	//Debug Command to test CSV Parser.
 	//printRange(csv, 1505, 1515, 26);
@@ -403,7 +404,7 @@ void printMovieList(struct csv *csv, int compareIndex) {
 	int i;
 	//printf("compareIndex=%d\n",compareIndex);
 	for (i=0; i<size; i++){
-		printf("%s\n", ((entries[i]->values)+compareIndex)->stringVal);
+		printf("%s\n", (entries[i]->values[compareIndex])->stringVal);
 	}
 	return;
 }

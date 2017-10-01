@@ -11,8 +11,13 @@ int main(int argc, char **argv) {
 
 	printf("Sorting by: %s\n", sortBy);
 	
+	printRange(csv, 0, 5, 1);
+	printf("%p\n", csv->entries[0]);
+
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
 	printMovieList(csv, compareIndex);
+
+	printf("%p\n", csv->entries[0]);
 
 	//Debug Command to test CSV Parser.
 	//printRange(csv, 1505, 1515, 26);
@@ -322,8 +327,6 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 	//index2 goes up to and including high
 	while (index1 <= mid && index2 <= high) { //the lower array gets the middle element
 		printf("Flag 3--, Comparison Below, index1, index2 %ld%ld\n", index1, index2);
-		printf("%s\n", (entries[index2]->values[compareIndex]).stringVal);
-		printf("%s\n", (tempArray1[index1]->values[compareIndex]).stringVal);
 		if (compareValue(&(tempArray1[index1]->values[compareIndex]),&(entries[index2]->values[compareIndex]),columnTypes[compareIndex])==-1) {
 			//if the lower list has the smaller value
 			entries[insertLocation] = tempArray1[index1-low];

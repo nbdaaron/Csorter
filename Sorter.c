@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
 	//printMovieList(csv, 1);
 	//print the CSV instead
-	printCSV(csv, 1);
+	printCSV(csv, compareIndex);
 	
 	//printf("%d\n", compareIndex);
 
@@ -426,11 +426,11 @@ void printCSV(struct csv *csv, int compareIndex) {
 			
 			enum type columnType = csv->columnTypes[j];
 			if (columnType == string) {
-				printf("%s", csv->entries[i]->values[j].stringVal);
+				printf("%s", entries[i]->values[j].stringVal);
 			} else if (columnType == integer) {
-				printf("%ld", csv->entries[i]->values[j].intVal);
+				printf("%ld", entries[i]->values[j].intVal);
 			} else if (columnType == decimal) {
-				printf("%f", csv->entries[i]->values[j].decimalVal);
+				printf("%f", entries[i]->values[j].decimalVal);
 			}
 			
 		}

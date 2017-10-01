@@ -360,18 +360,6 @@ int compareValue(union value *location1, union value *location2, enum type dataT
 	return 1; //first value is bigger or they are equal
 }
 
-void setValue(union value *location, char *value, enum type dataType) {
-	if (dataType == string) {
-		location->stringVal = value;
-	} else if (dataType == integer) {
-		location->intVal = atoi(value);
-	} else if (dataType == decimal) {
-		location->decimalVal = atof(value);
-	} else {
-		printf("Error: Unknown column type for value: %s.\n", value);
-	}
-}
-
 void printSortedColumn(struct csv *csv, int compareIndex) {
 	struct entry** entries = csv->entries;
 	long size = csv->numEntries-1;
@@ -451,4 +439,16 @@ struct entry **addEntryToArray(struct entry **array, struct entry *entry, int po
 	array[position] = entry;
 
 	return array;
+}
+
+void setValue(union value *location, char *value, enum type dataType) {
+	if (dataType == string) {
+		location->stringVal = value;
+	} else if (dataType == integer) {
+		location->intVal = atoi(value);
+	} else if (dataType == decimal) {
+		location->decimalVal = atof(value);
+	} else {
+		printf("Error: Unknown column type for value: %s.\n", value);
+	}
 }

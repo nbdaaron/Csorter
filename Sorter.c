@@ -259,7 +259,6 @@ void mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	
 	//start mergeSort
 	MergeSort(low, high, entries, i, columnTypes);
-	return i;
 }
 
 void MergeSort(long low, long high, struct entry** entries, int compareIndex, enum type *columnTypes){

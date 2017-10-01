@@ -76,7 +76,7 @@ int compareValue(union value *location1, union value *location2, enum type dataT
 
 //Output methods
 void printSortedColumn(struct csv *csv, int compareIndex);
-void printCSV(struct csv *csv, int compareIndex);
+void printCSV(struct csv *csv);
 
 //Cleanup methods
 void freeCSV(struct csv *csv);

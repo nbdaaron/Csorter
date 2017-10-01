@@ -4,28 +4,16 @@
 #include "Sorter.h"
 
 int main(int argc, char **argv) {
-
+	
 	struct csv *csv = parseCSV();
 	char *sortBy = argv[2];
-
-	//printf("Sorting by: %s\n", sortBy);
-	
-	//printRange(csv, 0, 5, 1);
 	
 	int compareIndex = mergesortMovieList(csv, sortBy, csv->columnTypes);
-	//printMovieList(csv, 1);
-	//print the CSV instead
+	
 	printCSV(csv, compareIndex);
 	
-	//printf("%d\n", compareIndex);
-
-	//printf("%p\n", csv->entries[0]);
-
-	//Debug Command to test CSV Parser.
-	//printRange(csv, 1505, 1515, 26);
-
 	freeCSV(csv);
-	//printf("Program completed!\n");
+	
 	return 0;
 }
 

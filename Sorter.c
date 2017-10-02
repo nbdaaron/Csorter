@@ -158,7 +158,9 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 				currentString = malloc(sizeof(char)*maxStringSize);
 			} else {
-				currentString = addCharacterToString(currentString, next, stringPosition++);
+				if (next != ' ' && next != '\t') {
+					currentString = addCharacterToString(currentString, next, stringPosition++);
+				}
 			}
 		}
 

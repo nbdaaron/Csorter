@@ -150,7 +150,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 				if (stringPosition == 0) {
 					continue;
 				}
-				addCharacterToString(currentString, '\0', stringPosition);
+				currentString = addCharacterToString(currentString, '\0', stringPosition);
 				setValue(&(currentEntry -> values[currentValuePosition]), currentString, columnTypes[currentValuePosition]);
 				currentValuePosition++;
 
@@ -164,7 +164,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 				//If quotation marks found, ignore any commas until next quotation mark found.
 				quotationMarksFound = !quotationMarksFound;
 			} else if (next == ',' && !quotationMarksFound) {
-				addCharacterToString(currentString, '\0', stringPosition);
+				currentString = addCharacterToString(currentString, '\0', stringPosition);
 				setValue(&(currentEntry -> values[currentValuePosition]), currentString, columnTypes[currentValuePosition]);
 				currentValuePosition++;
 
@@ -177,7 +177,9 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 				currentString = malloc(sizeof(char)*maxStringSize);
 			} else {
-				addCharacterToString(currentString, next, stringPosition++);
+				if (next != ' ' && next != '\t'){
+					currentString = addCharacterToString(currentString, next, stringPosition++);
+				}
 			}
 		}
 

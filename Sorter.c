@@ -165,7 +165,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 		currentEntry = malloc(sizeof(struct entry));
 		currentEntry -> values = malloc(sizeof(union value) * columns);
 		currentValuePosition = 0;
-		printf("Current Entry: %d\n", currentEntry);
+		//printf("Current Entry: %d\n", currentEntryPosition);
 	}
 
 	struct entryInfo ei;
@@ -390,7 +390,7 @@ void printCSV(struct csv *csv) {
 			}
 			enum type columnType = csv->columnTypes[j];
 			if (columnType == string) {
-				printf("%s", entries[i]->values[j].stringVal);
+				printf("\"%s\"", entries[i]->values[j].stringVal);
 			} else if (columnType == integer) {
 				printf("%ld", entries[i]->values[j].intVal);
 			} else if (columnType == decimal) {

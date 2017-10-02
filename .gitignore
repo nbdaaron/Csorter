@@ -1,6 +1,6 @@
 *.out
 *.exe
-*.out.dSYM
 Makefile
 *.exe.*
 sorter
+*.dSYM

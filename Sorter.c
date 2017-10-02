@@ -83,7 +83,7 @@ struct headerInfo getHeaderInfo() {
 struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 	//Return value: Array of Entry Pointers.
-	struct entry **ret = malloc(sizeof(struct entry) * maxEntries);
+	struct entry **ret = malloc(sizeof(struct entry *) * maxEntries);
 
 	char eofReached = 0, newlineFound = 0, next;
 	int scanResult;

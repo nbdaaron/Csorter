@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
+///Parses CSV and returns a pointer to CSV.
 struct csv *parseCSV() {
 
 	//Pointer to CSV file that will be returned.
@@ -80,6 +81,7 @@ struct headerInfo getHeaderInfo() {
 	return ret;
 }
 
+///Retrieves CSV Entries through scanf and returns array of entries as well as entry count.
 struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 	//Return value: Array of Entry Pointers.
@@ -170,7 +172,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 	struct entryInfo ei;
 	ei.entries = ret;
-	ei.numEntries = currentEntryPosition;
+	ei.numEntries = currentEntryPosition - 1;
 
 	return ei;
 }
@@ -256,7 +258,7 @@ void mergesortMovieList(struct csv *csv, char *query, enum type *columnTypes) {
 	struct entry** entries = csv->entries;
 	long low = 0;
 	//numEntries includes the labels row (-1), to use Array indicies (-1)
-	long high = csv->numEntries-1-1;
+	long high = csv->numEntries-1;
 	
 	//start mergeSort
 	MergeSort(low, high, entries, i, columnTypes);
@@ -362,7 +364,7 @@ int compareValue(union value *location1, union value *location2, enum type dataT
 
 void printSortedColumn(struct csv *csv, int compareIndex) {
 	struct entry** entries = csv->entries;
-	long size = csv->numEntries-1;
+	long size = csv->numEntries;
 	int i;
 	for (i=0; i<size; i++){
 		printf("%s\n", (entries[i]->values[compareIndex]).stringVal);
@@ -372,7 +374,7 @@ void printSortedColumn(struct csv *csv, int compareIndex) {
 
 void printCSV(struct csv *csv) {
 	struct entry** entries = csv->entries;
-	long size = csv->numEntries-1;
+	long size = csv->numEntries;
 	int i;
 	int j;
 	for (i=0;i<columns;i++) {

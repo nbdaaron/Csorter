@@ -4,3 +4,4 @@ Makefile
 *.exe.*
 sorter
 *.dSYM
+*.csv

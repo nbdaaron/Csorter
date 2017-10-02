@@ -311,7 +311,7 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 		//dereference tempArray(1,2) at an index, dereference and grab values, dereference and grab string, decimal, or float value
 		//compareValue returns -1 when element in tempArray1 is smaller and 1 whenelement in tempArray2 is bigger
 		if (compareValue(&(tempArray1[index1-low]->values[compareIndex]),&(tempArray2[index2-(mid+1)]->values[compareIndex]),columnTypes[compareIndex])==-1) {
-			//if tempArray1 has the smaller value
+			//if tempArray1 has the smaller value or they're equal: this makes merge sort stable
 			entries[insertLocation] = tempArray1[index1-low];
 			index1++;
 		} else { //if tempArray2  has the smalller value
@@ -345,21 +345,21 @@ void MergeParts(long low, long high, struct entry** entries, int compareIndex, e
 int compareValue(union value *location1, union value *location2, enum type dataType) {
 	//the values could be string, integer, or decimal
 	if (dataType == string) {
-		if (strcmp(location1->stringVal,location2->stringVal)<0) {
-			return -1; //first value is smaller
+		if (strcmp(location1->stringVal,location2->stringVal)<=0) {
+			return -1; //first value is smaller or equal
 		}
 	} else if (dataType == integer) {
-		if ((location1->intVal) - (location2->intVal)<0) {
-			return -1; //first value is smaller
+		if ((location1->intVal) - (location2->intVal)<=0) {
+			return -1; //first value is smaller or equal
 		}
 	} else if (dataType == decimal) {
-		if ((location1->decimalVal) - (location2->decimalVal)<0) {
-			return -1; //first value is smaller
+		if ((location1->decimalVal) - (location2->decimalVal)<=0) {
+			return -1; //first value is smaller or equal
 		}
 	} else {
 		printf("Error: compareValue\n");
 	}
-	return 1; //first value is bigger or they are equal
+	return 1; //first value is bigger
 }
 
 void printSortedColumn(struct csv *csv, int compareIndex) {

@@ -113,6 +113,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 	int stringPosition;
 
 	int quotationMarksFound = 0;
+	int nonWhiteSpaceFound = 0;
 
 	int currentEntryPosition = 0;
 	int currentValuePosition = 0;
@@ -120,7 +121,7 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 	//Loop through each line until end of file reached.
 	while (!eofReached) {
-		newlineFound = 0, stringPosition = 0, quotationMarksFound = 0;
+		newlineFound = 0, stringPosition = 0, quotationMarksFound = 0, nonWhiteSpaceFound = 0;
 
 		//For each line, a new entry will be created (with an array of value pointers).
 		currentEntry = malloc(sizeof(struct entry));
@@ -177,8 +178,9 @@ struct entryInfo getCSVEntries(enum type *columnTypes) {
 
 				currentString = malloc(sizeof(char)*maxStringSize);
 			} else {
-				if (next != ' ' && next != '\t'){
+				if (nonWhiteSpaceFound || (next != ' ' && next != '\t')) {
 					currentString = addCharacterToString(currentString, next, stringPosition++);
+					nonWhiteSpaceFound = 1;
 				}
 			}
 		}
